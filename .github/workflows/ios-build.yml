@@ -1,28 +1,35 @@
- jobs:
-   build:
-     runs-on: macos-latest
-     steps:
-       - uses: actions/checkout@v3
+name: iOS Build
 
-+      - name: Install native build dependencies
-+        run: |
-+          brew update
-+          brew install cython autoconf automake
+on:
+  push:
+    branches:
+      - main
 
-       - name: Setup Python & Kivy-iOS
-         run: |
-           python3 -m venv venv
-           source venv/bin/activate
-           pip install --upgrade pip
-           pip install kivy-ios
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
 
-       - name: Run iOS build script
-         run: |
-           source venv/bin/activate
-           bash build_ios.sh
+      - name: Install native build dependencies
+        run: |
+          brew update
+          brew install cython autoconf automake
 
-       - name: Upload .ipa artifact
-         uses: actions/upload-artifact@v4
-         with:
-           name: MyApp.ipa
-           path: build/MyApp.ipa
+      - name: Setup Python & Kivy-iOS
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install kivy-ios
+
+      - name: Run iOS build script
+        run: |
+          source venv/bin/activate
+          bash build_ios.sh
+
+      - name: Upload .ipa artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MyApp.ipa
+          path: build/MyApp.ipa
