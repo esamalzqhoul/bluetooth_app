@@ -1,40 +1,32 @@
 #!/usr/bin/env bash
 set -e
 
-# Optional: Show recipes
-toolchain recipes
+# Absolute root path to the repo (to avoid confusion on CI)
+ROOT_DIR=$(pwd)
 
 # Step 0: Build Python for iOS
 toolchain build python3
 
-# Step 1: Create iOS project
-toolchain create MyApp bluetooth_app.py
+# Step 1: Create the iOS project
+toolchain create myapp bluetooth_app.py
 
-# Step 2: Change into the created project (called myapp-ios regardless of name)
-cd myapp-ios
+cd myapp
 
-# Step 3: Build python AGAIN inside app folder (required for pip to work)
-toolchain build python3
+# Step 2: Install deps (optional)
+toolchain pip install -r "$ROOT_DIR/requirements.txt" || true
 
-# Step 4: Install Python deps (if any)
-if [ -f ../requirements.txt ]; then
-    toolchain pip install -r ../requirements.txt
-else
-    echo "No requirements.txt found, skipping pip install"
-fi
-
-# Step 5: Build Kivy and the app
+# Step 3: Build Kivy and app
 toolchain build kivy
-toolchain build MyApp
+toolchain build myapp
 
-# Step 6: Archive & export .ipa
+# Step 4: Export .ipa (assumes ExportOptions.plist is in repo root)
 xcodebuild -workspace myapp.xcodeproj/project.xcworkspace \
-           -scheme MyApp \
+           -scheme myapp \
            -configuration Release \
            -sdk iphoneos \
-           archive -archivePath build/MyApp.xcarchive
+           archive -archivePath build/myapp.xcarchive
 
 xcodebuild -exportArchive \
-           -archivePath build/MyApp.xcarchive \
-           -exportOptionsPlist ../ExportOptions.plist \
+           -archivePath build/myapp.xcarchive \
+           -exportOptionsPlist "$ROOT_DIR/ExportOptions.plist" \
            -exportPath build

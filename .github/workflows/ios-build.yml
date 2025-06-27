@@ -10,19 +10,19 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-      - name: Install native build dependencies
+      - name: Install build tools
         run: |
-          brew update
-          brew install autoconf automake
+          brew install cython autoconf automake
 
-      - name: Setup Python virtual environment
+      - name: Set up Python environment
         run: |
           python3 -m venv venv
           source venv/bin/activate
           pip install --upgrade pip
-          pip install cython kivy-ios
+          pip install kivy-ios
 
       - name: Run iOS build script
         run: |
@@ -32,5 +32,5 @@ jobs:
       - name: Upload .ipa artifact
         uses: actions/upload-artifact@v4
         with:
-          name: MyApp.ipa
-          path: build/MyApp.ipa
+          name: myapp.ipa
+          path: myapp/build/*.ipa
