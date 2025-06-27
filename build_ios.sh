@@ -1,27 +1,29 @@
 #!/usr/bin/env bash
 set -e
 
-# 1) Create the Xcode project
-toolchain create MyApp bluetooth_app.py
+# === SETUP VENV ===
+python3 -m venv venv
+source venv/bin/activate
 
+# === UPGRADE PIP AND INSTALL CYTHON ===
+pip install --upgrade pip
+pip install cython==3.0.11
+
+# === INSTALL DEPENDENCIES ===
+pip install kivy-ios
+
+# === CREATE XCODE PROJECT ===
+toolchain create MyApp bluetooth_app.py
 cd MyApp
 
-# 2) Install a compatible Cython version inside the toolchain
-toolchain pip install cython==3.0.11
-
-# 3) Make sure `cython` executable is in PATH for the build
-ln -s "$(toolchain pip show cython | grep Location | cut -d' ' -f2)/cython" /usr/local/bin/cython || true
-
-# 4) Install your app dependencies
+# === INSTALL PYTHON REQUIREMENTS ===
 toolchain pip install -r ../requirements.txt
 
-# 5) Build Python and Kivy
+# === BUILD PYTHON + KIVY + APP ===
 toolchain build python3 kivy
-
-# 6) Build your app
 toolchain build MyApp
 
-# 7) Archive & export .ipa
+# === ARCHIVE & EXPORT .IPA ===
 xcodebuild -workspace MyApp.xcodeproj/project.xcworkspace \
            -scheme MyApp \
            -configuration Release \

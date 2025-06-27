@@ -8,20 +8,21 @@ on:
 jobs:
   build:
     runs-on: macos-latest
+
     steps:
       - uses: actions/checkout@v3
 
       - name: Install native build dependencies
         run: |
           brew update
-          brew install cython autoconf automake
+          brew install autoconf automake
 
-      - name: Setup Python & Kivy-iOS
+      - name: Setup Python virtual environment
         run: |
           python3 -m venv venv
           source venv/bin/activate
           pip install --upgrade pip
-          pip install kivy-ios
+          pip install cython kivy-ios
 
       - name: Run iOS build script
         run: |
