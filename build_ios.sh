@@ -1,19 +1,23 @@
 #!/usr/bin/env bash
 set -e
 
-# 1) Create the Xcode project
+# === Step 0: Install required build tools ===
+pip install --upgrade pip setuptools wheel
+pip install cython autoconf automake
+
+# === Step 1: Create the Xcode project ===
 toolchain create MyApp bluetooth_app.py
 
 cd MyApp
 
-# 2) Install Python deps into the iOS build
+# === Step 2: Install Python dependencies into iOS build ===
 toolchain pip install -r ../requirements.txt
 
-# 3) Build Kivy and your app
+# === Step 3: Build Kivy and your app ===
 toolchain build python3 kivy
 toolchain build MyApp
 
-# 4) Archive & export .ipa
+# === Step 4: Archive the app and export the IPA ===
 xcodebuild -workspace MyApp.xcodeproj/project.xcworkspace \
            -scheme MyApp \
            -configuration Release \
