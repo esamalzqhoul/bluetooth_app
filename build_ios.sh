@@ -6,15 +6,17 @@ toolchain create MyApp bluetooth_app.py
 
 cd MyApp
 
-# 2) Install Python deps into the iOS build
-toolchain pip install cython                   # ✅ Required for compiling Kivy!
-toolchain pip install -r ../requirements.txt   # Your app’s deps
+# 2) Fix: Install cython inside kivy-ios toolchain's virtualenv
+toolchain pip install cython
 
-# 3) Build Kivy and your app
+# 3) Install your other Python dependencies
+toolchain pip install -r ../requirements.txt
+
+# 4) Build Kivy and your app
 toolchain build python3 kivy
 toolchain build MyApp
 
-# 4) Archive & export .ipa
+# 5) Archive & export .ipa
 xcodebuild -workspace MyApp.xcodeproj/project.xcworkspace \
            -scheme MyApp \
            -configuration Release \
