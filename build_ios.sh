@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -e
 
-# Ensure toolchain is up to date
+# Optional: ensure recipe list is up to date
 toolchain recipes
 
-# Step 0: Build Python for iOS (once)
+# Step 0: Build Python for iOS (needed once)
 toolchain build python3
 
 # Step 1: Create the iOS project
@@ -12,17 +12,17 @@ toolchain create MyApp bluetooth_app.py
 
 cd MyApp
 
-# ✅ Step 2: Install Cython directly into iOS Python env
+# ✅ Step 2: Install cython inside the toolchain's Python env
 toolchain pip install cython
 
-# ✅ Optional: install other Python deps (won’t break if empty)
+# ✅ Step 3: Install other requirements
 toolchain pip install -r ../requirements.txt || true
 
-# Step 3: Build Kivy and your app
+# Step 4: Build Kivy and your app
 toolchain build kivy
 toolchain build MyApp
 
-# Step 4: Archive & export .ipa
+# Step 5: Archive & export .ipa
 xcodebuild -workspace MyApp.xcodeproj/project.xcworkspace \
            -scheme MyApp \
            -configuration Release \
