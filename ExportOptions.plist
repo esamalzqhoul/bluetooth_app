@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" 
+    "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Development build, suitable for AltStore with a free Apple ID -->
+    <key>method</key>
+    <string>development</string>
+
+    <!-- Let Xcode auto-sign with whatever provisioning profile it finds -->
+    <key>signingStyle</key>
+    <string>automatic</string>
+
+    <!-- Don’t include bitcode or symbol uploads -->
+    <key>compileBitcode</key>
+    <false/>
+    <key>uploadSymbols</key>
+    <false/>
+
+    <!-- Export an .ipa -->
+    <key>destination</key>
+    <string>export</string>
+</dict>
+</plist>
