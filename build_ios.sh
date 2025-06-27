@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 set -e
 
-# Step 0: Build Python for iOS (only once)
+# Ensure toolchain is up to date
+toolchain recipes
+
+# Step 0: Build Python for iOS (once)
 toolchain build python3
 
 # Step 1: Create the iOS project
@@ -9,10 +12,10 @@ toolchain create MyApp bluetooth_app.py
 
 cd MyApp
 
-# ✅ Step 2: Install Cython into the iOS toolchain environment
+# ✅ Step 2: Install Cython directly into iOS Python env
 toolchain pip install cython
 
-# Optional: install other Python deps
+# ✅ Optional: install other Python deps (won’t break if empty)
 toolchain pip install -r ../requirements.txt || true
 
 # Step 3: Build Kivy and your app

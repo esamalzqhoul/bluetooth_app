@@ -11,46 +11,24 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install brew dependencies
+      - name: Install dependencies (only brew tools)
         run: |
           brew update
           brew install autoconf automake
 
-      - name: Set up Python & venv
+      - name: Install Kivy-iOS
         run: |
           python3 -m venv venv
           source venv/bin/activate
           pip install --upgrade pip
           pip install kivy-ios
 
-      - name: Build iOS App
+      - name: Run iOS build script
         run: |
           source venv/bin/activate
-          toolchain build python3
-          toolchain create myapp bluetooth_app.py
-          cd myapp
+          bash build_ios.sh
 
-          # Install cython in iOS build env
-          toolchain pip install cython
-
-          # Your requirements (if any)
-          toolchain pip install -r ../requirements.txt || true
-
-          toolchain build kivy
-          toolchain build myapp
-
-          xcodebuild -workspace myapp.xcodeproj/project.xcworkspace \
-                     -scheme myapp \
-                     -configuration Release \
-                     -sdk iphoneos \
-                     archive -archivePath build/myapp.xcarchive
-
-          xcodebuild -exportArchive \
-                     -archivePath build/myapp.xcarchive \
-                     -exportOptionsPlist ../ExportOptions.plist \
-                     -exportPath build
-
-      - name: Upload .ipa
+      - name: Upload .ipa artifact
         uses: actions/upload-artifact@v4
         with:
           name: MyApp.ipa
