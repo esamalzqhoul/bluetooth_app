@@ -6,19 +6,22 @@ toolchain create MyApp bluetooth_app.py
 
 cd MyApp
 
-# ✅ FIX: Install Cython inside toolchain’s internal Python environment
-toolchain pip install cython
+# 2) Install a compatible Cython version inside the toolchain
+toolchain pip install cython==3.0.11
 
-# Install your app dependencies
+# 3) Make sure `cython` executable is in PATH for the build
+ln -s "$(toolchain pip show cython | grep Location | cut -d' ' -f2)/cython" /usr/local/bin/cython || true
+
+# 4) Install your app dependencies
 toolchain pip install -r ../requirements.txt
 
-# Build Python and Kivy
+# 5) Build Python and Kivy
 toolchain build python3 kivy
 
-# Build your app
+# 6) Build your app
 toolchain build MyApp
 
-# Archive & export .ipa
+# 7) Archive & export .ipa
 xcodebuild -workspace MyApp.xcodeproj/project.xcworkspace \
            -scheme MyApp \
            -configuration Release \
