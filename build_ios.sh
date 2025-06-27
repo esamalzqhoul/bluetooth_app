@@ -1,24 +1,31 @@
 #!/usr/bin/env bash
 set -e
 
-toolchain recipes 
+# Optional: list available recipes
+toolchain recipes
+
 # Step 0: Build Python for iOS (required before project creation)
 toolchain build python3
 
 # Step 1: Create the iOS project
 toolchain create MyApp bluetooth_app.py
 
-cd MyApp
+# IMPORTANT: Kivy-iOS creates a folder called "myapp-ios" regardless of input name
+cd myapp-ios
 
 # Step 2: Install Python deps into the iOS build
-toolchain pip install -r ../requirements.txt || true  # don't fail if requirements.txt is empty
+if [ -f ../requirements.txt ]; then
+    toolchain pip install -r ../requirements.txt
+else
+    echo "No requirements.txt found, skipping Python deps install"
+fi
 
 # Step 3: Build Kivy and your app
 toolchain build kivy
 toolchain build MyApp
 
 # Step 4: Archive & export .ipa
-xcodebuild -workspace MyApp.xcodeproj/project.xcworkspace \
+xcodebuild -workspace myapp.xcodeproj/project.xcworkspace \
            -scheme MyApp \
            -configuration Release \
            -sdk iphoneos \
