@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
+toolchain recipes 
 # Step 0: Build Python for iOS (required before project creation)
 toolchain build python3
 
