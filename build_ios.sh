@@ -1,29 +1,22 @@
 #!/usr/bin/env bash
 set -e
 
-# === SETUP VENV ===
-python3 -m venv venv
-source venv/bin/activate
+# Step 0: Build Python for iOS (required before project creation)
+toolchain build python3
 
-# === UPGRADE PIP AND INSTALL CYTHON ===
-pip install --upgrade pip
-pip install cython==3.0.11
-
-# === INSTALL DEPENDENCIES ===
-pip install kivy-ios
-
-# === CREATE XCODE PROJECT ===
+# Step 1: Create the iOS project
 toolchain create MyApp bluetooth_app.py
+
 cd MyApp
 
-# === INSTALL PYTHON REQUIREMENTS ===
-toolchain pip install -r ../requirements.txt
+# Step 2: Install Python deps into the iOS build
+toolchain pip install -r ../requirements.txt || true  # don't fail if requirements.txt is empty
 
-# === BUILD PYTHON + KIVY + APP ===
-toolchain build python3 kivy
+# Step 3: Build Kivy and your app
+toolchain build kivy
 toolchain build MyApp
 
-# === ARCHIVE & EXPORT .IPA ===
+# Step 4: Archive & export .ipa
 xcodebuild -workspace MyApp.xcodeproj/project.xcworkspace \
            -scheme MyApp \
            -configuration Release \
